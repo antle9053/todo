@@ -1,6 +1,8 @@
 package anthony9053.todo.controllers;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,14 +30,27 @@ public class TodoController {
   }
 
   @GetMapping("/{id}")
-  Optional<TodoEntity> getMethodName(@PathVariable Long id) {
+  Optional<TodoEntity> findById(@PathVariable Long id) {
     return todoRepository.findById(id);
   }
 
   @PostMapping("/create")
-  public void postMethodName(@RequestBody TodoEntity todoEntity) {
-
+  public void createTodo(@RequestBody TodoEntity todoEntity) {
     todoRepository.create(todoEntity);
   }
 
+  @DeleteMapping("/delete/{id}")
+  public void deleteTodo(@PathVariable Long id) {
+    todoRepository.delete(id);
+  }
+
+  @PatchMapping("/update/{id}")
+  public void updateTodo(@RequestBody TodoEntity todoEntity, @PathVariable Long id) {
+    todoRepository.update(todoEntity, id);
+  }
+
+  @GetMapping("/count")
+  public Integer countTodo() {
+    return todoRepository.count();
+  }
 }

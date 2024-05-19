@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import anthony9053.todo.entities.TodoEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,5 +36,41 @@ public class JDBCTodoRepository implements TodoRepository {
     jdbcClient.sql("INSERT INTO todo(title,status,content) values(?,?,?)")
         .params(List.of(todoEntity.title(), todoEntity.status(), todoEntity.content()))
         .update();
+  }
+
+  @Override
+  public void delete(@NonNull Long id) {
+    jdbcClient.sql("DELETE FROM todo WHERE id = :id").param("id", id).update();
+  }
+
+  @Override
+  public void update(TodoEntity todoEntity, @NonNull Long id) {
+    List<Object> params = new ArrayList<>();
+    if (todoEntity.title() != null) {
+      params.add(todoEntity.title());
+    }
+    if (todoEntity.content() != null) {
+      params.add(todoEntity.content());
+    }
+    if (todoEntity.status() != null) {
+      params.add(todoEntity.status());
+    }
+
+    params.add(id);
+
+    String sql = "UPDATE todo SET " + (todoEntity.title() != null ? "title = ?, "
+        : "")
+        + (todoEntity.content() != null ? "content = ?, "
+            : "")
+        + (todoEntity.status() != null ? "status = ? " : "") + "WHERE id = ?";
+
+    jdbcClient.sql(sql)
+        .params(params)
+        .update();
+  }
+
+  @Override
+  public Integer count() {
+    return jdbcClient.sql("SELECT * FROM todo").query().listOfRows().size();
   }
 }

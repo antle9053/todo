@@ -16,4 +16,10 @@ public interface TodoRepository {
   Optional<TodoEntity> findById(@NonNull Long id);
 
   void create(TodoEntity todoEntity);
+
+  void delete(@NonNull Long id);
+
+  void update(TodoEntity todoEntity, @NonNull Long id);
+
+  Integer count();
 }
